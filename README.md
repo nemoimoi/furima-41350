@@ -37,7 +37,6 @@
 ## ordersテーブル
 |Column          |Type      |Options          |
 |----------------|----------|-----------------|
-|buy             |string    |null: false	    |
 |user            |references|null: false,foreign_key: true|
 |item            |references|null: false,foreign_key: true|
 
@@ -55,7 +54,7 @@
 |house_number    |string    |null: false	    |
 |building_name   |string    |           	    |
 |telephone_number|string    |null: false	    |
-|item            |references|null: false,foreign_key: true|
+|order           |references|null: false,foreign_key: true|
 
 ### Association
 - belongs_to :order
