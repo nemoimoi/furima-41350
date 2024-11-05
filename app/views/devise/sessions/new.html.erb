@@ -1,7 +1,6 @@
 <%= render "shared/second-header"%>
 
-<%= form_with class: 'registration-main', local: true do |f| %>
-<%= form_with model:resource, as: resource_name, url: session_path(resource_name), html:{data: { turbo:false } } do |f| %>
+<%= form_with model:resource, as: resource_name, url: session_path(resource_name), class: 'registration-main', html:{data: { turbo:false } } do |f| %>
   <div class='form-wrap'>
     <div class='form-header'>
       <h1 class='form-header-text'>
@@ -30,7 +29,6 @@
       <%= f.submit "ログイン" ,class:"login-red-btn" %>
     </div>
   </div>
-<% end %>
 <% end %>
 
 <%= render "shared/second-footer"%>
