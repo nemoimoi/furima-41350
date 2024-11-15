@@ -12,10 +12,8 @@ class ItemsController < ApplicationController
     @item.user = current_user
     
     if @item.save
-      Rails.logger.debug("Item saved successfully.")
       redirect_to '/'
     else
-      puts @item.errors.full_messages
       render :new ,status: :unprocessable_entity
     end
   end
@@ -23,6 +21,6 @@ class ItemsController < ApplicationController
   private
 
   def item_params
-    params.require(:item).permit(:image, :title, :description, :category_id, :condition_id, :postage_id, :area_id, :deadline_id, :price, :user_id )
+    params.require(:item).permit(:image, :title, :description, :category_id, :condition_id, :postage_id, :area_id, :deadline_id, :price).merge(user_id: current_user.id)
   end
 end
