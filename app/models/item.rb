@@ -8,16 +8,39 @@ class Item < ApplicationRecord
   belongs_to :deadline
   has_one_attached :image
 
-  validates :title, :description, :category_id, :condition_id, :postage_id, :area_id, :deadline, :price, :image, presence: true
+  attr_accessor :fake_price
 
-  with_options presence: true, format: { with: /\A([3-9]\d{2}|[1-9]\d{3,6}|[1-9]\d{0,2}(,\d{3}){1,2})\z/, message: 'には¥300~¥9,999,999の半角数字を使用してください' } do
-    validates :price, presence: true
+  validates :title, :description, :category_id, :condition_id, :postage_id, :area_id, :deadline_id, :image, presence: true
+  validates :price, presence: true, numericality: { only_integer: true }
+  validates :category_id, numericality: { other_than: 1 , message: "can't be blank" }
+  validates :condition_id, numericality: { other_than: 1 , message: "can't be blank" }
+  validates :postage_id, numericality: { other_than: 1 , message: "can't be blank" }
+  validates :area_id, numericality: { other_than: 1 , message: "can't be blank" }
+  validates :deadline_id, numericality: { other_than: 1 , message: "can't be blank" }
+
+  validate :price_must_be_valid
+
+  before_validation :set_price_from_fake_price
+
+  private
+
+  def price_must_be_valid
+    return if fake_price.blank? && price.blank?
+
+    if fake_price.present?
+      if fake_price.is_a?(String) && !fake_price.match?(/\A[0-9]+\z/)
+        errors.add(:price, "can't contain anything other than half-width numbers.")
+      elsif fake_price.to_i < 300 || fake_price.to_i > 9999999
+        errors.add(:price, "must be between 300 and 9999999")
+      end
+    else
+      if price < 300 || price > 9999999
+        errors.add(:price, "must be between 300 and 9999999")
+      end
+    end
   end
 
-  validates :category_id, numericality: { other_than: 1 , message: "can't be blank"}
-  validates :condition_id, numericality: { other_than: 1 , message: "can't be blank"}
-  validates :postage_id, numericality: { other_than: 1 , message: "can't be blank"}
-  validates :area_id, numericality: { other_than: 1 , message: "can't be blank"}
-  validates :deadline_id, numericality: { other_than: 1 , message: "can't be blank"}
-
+  def set_price_from_fake_price
+    self.price = fake_price.to_i if fake_price.present? && fake_price.is_a?(String) && fake_price.match?(/\A[0-9]+\z/)
+  end
 end

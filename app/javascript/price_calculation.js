@@ -1,13 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   const priceInput = document.getElementById('item-price');
 
-  if (priceInput) {
-    const price = () => {
-      console.log("price function executed");
-
-      priceInput.addEventListener("input", () => {
+      const updatePriceDisplay = () => {
         const inputValue = parseFloat(priceInput.value);
-        console.log("Input value:", inputValue);
 
         if (!isNaN(inputValue)) {
           const addTaxDom = document.getElementById('add-tax-price');
@@ -17,11 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
               const taxValue = Math.floor(inputValue * 0.1);
               addTaxDom.innerHTML = taxValue;
-              console.log("Updated tax value:", taxValue);
 
               const revenueValue = Math.floor(inputValue - taxValue);
               addRevenueDom.innerHTML = revenueValue;
-              console.log("Updated revenue value:", revenueValue);
+
             } catch (error) {
               console.error("Error updating values:", error);
             }
@@ -31,13 +25,16 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           console.error("The value entered is not a valid number.");
         }
-      });
+      };
+
+    const price = () => {
+      if (priceInput) {
+        priceInput.removeEventListener("input", updatePriceDisplay);
+        priceInput.addEventListener("input", updatePriceDisplay);
+      }
     };
 
     price();
-
     window.addEventListener("turbo:load", price);
-  } else {
-    console.log("Element with ID 'item-price' not found on this page.");
-  }
+    window.addEventListener("turbo:render", price);
 });

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Item, type: :model do
   before do
-    @item = FactoryBot.build(:item)
+    @item = FactoryBot.build(:item, price: 500)
   end
 
   describe '商品出品' do
@@ -17,8 +17,8 @@ RSpec.describe Item, type: :model do
         @item.image = nil
         @item.valid?
         expect(@item.errors.full_messages).to include("Image can't be blank")
-
       end
+
       it 'ユーザーが紐づいていなければ投稿できない' do
         @item.user = nil
         @item.valid?
@@ -37,40 +37,58 @@ RSpec.describe Item, type: :model do
         expect(@item.errors.full_messages).to include("Description can't be blank")
       end
 
-      it 'categoryが選択されないと投稿できない' do
-        @item.category = nil
+      it 'カテゴリーに「---」が選択されている場合は出品できない' do
+        @item.category_id = 1
         @item.valid?
         expect(@item.errors.full_messages).to include("Category can't be blank")
       end
-      
-      it 'conditionが選択されないと投稿できない' do
-        @item.condition = nil
+
+      it '商品の状態に「---」が選択されている場合は出品できない' do
+        @item.condition_id = 1
         @item.valid?
         expect(@item.errors.full_messages).to include("Condition can't be blank")
       end
 
-      it 'postageが選択されないと投稿できない' do
-        @item.postage = nil
+      it '配送料の負担に「---」が選択されている場合は出品できない' do
+        @item.postage_id = 1
         @item.valid?
         expect(@item.errors.full_messages).to include("Postage can't be blank")
       end
 
-      it 'areaが選択されないと投稿できない' do
-        @item.area = nil
+      it '発送元の地域に「---」が選択されている場合は出品できない' do
+        @item.area_id = 1
         @item.valid?
         expect(@item.errors.full_messages).to include("Area can't be blank")
       end
 
-      it 'deadlineが選択されないと投稿できない' do
-        @item.deadline = nil
+      it '発送までの日数に「---」が選択されている場合は出品できない' do
+        @item.deadline_id = 1
         @item.valid?
         expect(@item.errors.full_messages).to include("Deadline can't be blank")
       end
 
-      it 'priceには¥300~¥9,999,999の半角数字を使用しないと投稿できない' do
-        @item.price = "Test123"
+      it '価格が空では出品できない' do
+        @item.price = ""
         @item.valid?
-        expect(@item.errors.full_messages).to include("Price には¥300~¥9,999,999の半角数字を使用してください")
+        expect(@item.errors.full_messages).to include("Price can't be blank")
+      end
+
+      it '価格に半角数字以外が含まれている場合は出品できない' do
+        @item.fake_price = "Test123"
+        @item.valid?
+        expect(@item.errors.full_messages).to include("Price can't contain anything other than half-width numbers.")
+      end
+
+      it '価格が300円未満では出品できない' do
+        @item.price = 299
+        @item.valid?
+        expect(@item.errors.full_messages).to include("Price must be between 300 and 9999999")
+      end
+
+      it '価格が9_999_999円を超えると出品できない' do
+        @item.price = 10000000
+        @item.valid?
+        expect(@item.errors.full_messages).to include("Price must be between 300 and 9999999")
       end
     end
   end

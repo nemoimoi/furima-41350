@@ -16,7 +16,7 @@ class ItemsController < ApplicationController
       redirect_to '/'
     else
       puts @item.errors.full_messages
-      render :new
+      render :new ,status: :unprocessable_entity
     end
   end
 
