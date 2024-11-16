@@ -8,7 +8,7 @@ class CreateItems < ActiveRecord::Migration[7.0]
       t.integer    :area_id,     null:false
       t.integer    :deadline_id, null:false
       t.integer    :price,       null:false
-      t.references :user,        null:false,foregign_key: true
+      t.references :user,        null:false,foreign_key: true
       t.timestamps
     end
   end
