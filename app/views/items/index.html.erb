@@ -128,9 +128,9 @@
       <% if @items.present? %>
         <% @items.each do |item| %>
           <li class='list'>
-            <%= link_to "#" do %>
+            <%= link_to item_path(item.id) do %>
               <div class='item-img-content'>
-                <%= image_tag item.image.variant(resize: '350x350'), class: 'item-image' %>
+                <%= image_tag item.image.variant(resize: '300x300'), class: 'item-image' %>
               </div>
               <%#<% if item.sold_out? %>
               <%#  <div class='sold-out'>
