@@ -1,5 +1,6 @@
 class ItemsController < ApplicationController
   before_action :authenticate_user!, only:[:edit, :new, :create]
+  before_action :item_find, only:[:show, :edit, :update]
   def index
     @items = Item.includes(:user).order("created_at DESC")
   end
@@ -19,12 +20,10 @@ class ItemsController < ApplicationController
   end
 
   def show
-    @item = Item.find(params[:id])
     @user = @item.user
   end
 
   def edit
-    @item = Item.find(params[:id])
     set_item_collections
     unless user_signed_in? && current_user.id == @item.user_id
       redirect_to root_path
@@ -32,9 +31,8 @@ class ItemsController < ApplicationController
   end
 
   def update
-    @item = Item.find(params[:id])
     if @item.update(item_params)
-       redirect_to root_path
+       redirect_to item_path
     else
       set_item_collections
       render :edit
@@ -53,5 +51,9 @@ class ItemsController < ApplicationController
     @postages = Postage.all
     @areas = Area.all
     @deadlines = Deadline.all
+  end
+
+  def item_find
+    @item = Item.find(params[:id])
   end
 end
