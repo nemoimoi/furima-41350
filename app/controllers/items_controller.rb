@@ -26,7 +26,6 @@ class ItemsController < ApplicationController
 
   def edit
     set_item_collections
-    match_id
   end
 
   def update
@@ -40,7 +39,6 @@ class ItemsController < ApplicationController
 
   def destroy
     @item.destroy
-    match_id
     redirect_to root_path
   end
 
