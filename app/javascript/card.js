@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const pay = () => {
       const form = document.getElementById('charge-form');
       if (!form) {
-        console.log("This is not the purchase page.");
         return; 
       }
 
@@ -54,6 +53,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // 初回読み込み時も実行
     pay();
   } else {
-    console.log('PAYJP public key is not set.');
   }
 });
