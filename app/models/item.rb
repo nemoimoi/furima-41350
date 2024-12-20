@@ -6,6 +6,7 @@ class Item < ApplicationRecord
   belongs_to :postage
   belongs_to :area
   belongs_to :deadline
+  has_one :order
   has_one_attached :image
 
   attr_accessor :fake_price
@@ -26,6 +27,10 @@ class Item < ApplicationRecord
 
   before_validation :set_price_from_fake_price
 
+  def sold_out?
+    self.order.present?
+  end
+
   private
 
   def price_must_be_valid
@@ -43,4 +48,5 @@ class Item < ApplicationRecord
   def set_price_from_fake_price
     self.price = fake_price.to_i if fake_price.present? && fake_price.is_a?(String) && fake_price.match?(/\A[0-9]+\z/)
   end
+
 end
