@@ -9,6 +9,9 @@ RSpec.describe OrderDestination, type: :model do
   describe '送付先情報の保存' do
 
     context '内容に問題ない場合' do
+      it '全ての値が正しく入力されていれば保存できること' do
+        expect(@order_destination).to be_valid
+      end
       it '建物名以外の値が正しく入力されていれば保存できること' do
         @order_destination.building_name = ''
         expect(@order_destination).to be_valid
