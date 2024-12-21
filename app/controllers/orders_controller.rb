@@ -6,23 +6,19 @@ class OrdersController < ApplicationController
 
   def index
     gon.payjp_public_key = ENV["PAYJP_PUBLIC_KEY"]
-    Rails.logger.debug { "Gon Public Key: #{gon.payjp_public_key}" }
     @order_destination = OrderDestination.new
   end
 
 
   def create
     @order_destination = OrderDestination.new(order_destination_params)
-    Rails.logger.debug { "OrderDestination Params: #{order_destination_params.inspect}" }
-
+    
     if @order_destination.valid?
       pay_item
       @order_destination.save
       redirect_to root_path, notice: 'Order was successfully created.'
     else
-      Rails.logger.debug { "Validation Errors: #{@order_destination.errors.full_messages}" }
       gon.payjp_public_key = ENV["PAYJP_PUBLIC_KEY"]
-      Rails.logger.debug { "Gon Public Key (create): #{gon.payjp_public_key}" }
       render :index
     end
   end
@@ -52,14 +48,7 @@ class OrdersController < ApplicationController
     ).merge(token: params[:token], item_id: params[:item_id], user_id: current_user.id)
   end
 
-  def order_params
-    params.permit(:token)
-  end
-
   def pay_item
-    item_id = params[:item_id]
-    item = Item.find(item_id)
-    item_price = item.price
     Payjp.api_key = ENV["PAYJP_SECRET_KEY"]
     Payjp::Charge.create(
       amount: @item.price,

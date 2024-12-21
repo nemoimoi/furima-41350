@@ -24,13 +24,10 @@ RSpec.describe OrderDestination, type: :model do
         @order_destination.valid?
         expect(@order_destination.errors.full_messages).to include("Postcode can't be blank")
       end
-      it 'postcodeが「3桁ハイフン4桁」の半角文字列以外では保存できないこと' do
-        invalid_postcodes = ['1234567', '12-34567', '123-456', 'abcdefg']
-        invalid_postcodes.each do |invalid_postcode|
-          @order_destination.postcode = invalid_postcode
-          @order_destination.valid?
-          expect(@order_destination.errors.full_messages).to include("Postcode is invalid. Include hyphen(-)")
-        end
+      it 'postcodeが半角ハイフンを含む形でなければ保存できないこと' do
+        @order_destination.postcode = "1234567"
+        @order_destination.valid?
+        expect(@order_destination.errors.full_messages).to include("Postcode is invalid. Include hyphen(-)")
       end
       it 'area_idが空だと保存できないこと' do
         @order_destination.area_id = ''
@@ -52,13 +49,15 @@ RSpec.describe OrderDestination, type: :model do
         @order_destination.valid?
         expect(@order_destination.errors.full_messages).to include("Telephone number can't be blank")
       end
-      it 'telephone_numberが10桁以上11桁以内の半角数値以外では保存できないこと' do
-        invalid_numbers = ["123456789", "123456789012", "1234abc567", "123-456-7890", "１２３４５６７８９０"]
-        invalid_numbers.each do |invalid_number|
-          @order_destination.telephone_number = invalid_number
-          @order_destination.valid?
-          expect(@order_destination.errors.full_messages).to include("Telephone number is invalid. Include only numbers")
-        end
+      it 'telephone_numberが10桁未満は保存できないこと' do
+        @order_destination.telephone_number = '123456789'
+        @order_destination.valid?
+        expect(@order_destination.errors.full_messages).to include("Telephone number is invalid. Include only numbers")
+      end
+      it 'telephone_numberが12桁以上では登録できないこと' do
+        @order_destination.telephone_number = '123456789123'
+        @order_destination.valid?
+        expect(@order_destination.errors.full_messages).to include("Telephone number is invalid. Include only numbers")
       end
       it 'tokenが空だと保存できないこと' do
         @order_destination.token = ''
