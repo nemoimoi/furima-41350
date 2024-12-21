@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const updatePriceDisplay = () => {
     const inputValue = parseFloat(priceInput.value);
-    
+
     if (!isNaN(inputValue)) {
       const addTaxDom = document.getElementById('add-tax-price');
       const addRevenueDom = document.getElementById('profit');
@@ -28,9 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (priceInput) {
       priceInput.removeEventListener("input", updatePriceDisplay);
       priceInput.addEventListener("input", updatePriceDisplay);
+    } else {
+      console.error('Element with ID "item-price" not found.');
     }
   };
   price();
+
   window.addEventListener("turbo:load", price);
   window.addEventListener("turbo:render", price);
 });

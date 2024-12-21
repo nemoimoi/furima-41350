@@ -7,7 +7,7 @@ FactoryBot.define do
     postage_id { Postage.where.not(id: 1).sample.id }
     area_id { Area.where.not(id: 1).sample.id }
     deadline_id { Deadline.where.not(id: 1).sample.id }
-    price { Faker::Commerce.price(range: 300..9999999) }
+    price { Faker::Number.between(from: 300, to: 9999999) }
     association :user
   
     after(:build) do |item|
